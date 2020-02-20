@@ -1,6 +1,6 @@
 # Ploto-gidat
 
-An extension for GIDAT.
+An extension for GIDAT (GRAPES Interactive Data Analytics Tool).
 
 ## LICENSE
 

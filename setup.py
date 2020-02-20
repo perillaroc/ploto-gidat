@@ -1,10 +1,15 @@
 # coding=utf-8
 from setuptools import setup, find_packages
+import io
+import re
+
+with io.open("ploto_gidat/__init__.py", "rt", encoding="utf8") as f:
+    version = re.search(r'__version__ = "(.*?)"', f.read()).group(1)
 
 setup(
     name='ploto-gidat',
 
-    version='0.2',
+    version=version,
 
     description='Ploto-gidat project.',
     long_description=__doc__,
@@ -26,10 +31,12 @@ setup(
         'requests',
         'sqlalchemy',
         'loguru',
-        'cx_Oracle'
     ],
 
     extras_require={
         'test': [],
+        "legacy": [
+            'cx_Oracle',
+        ]
     }
 )

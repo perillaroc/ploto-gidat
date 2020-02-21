@@ -1,5 +1,7 @@
 import time
 
+from flask import current_app
+
 
 def run_meteor_draw_task(plot_task: dict):
     task = {
@@ -19,16 +21,7 @@ def run_meteor_draw_task(plot_task: dict):
         'data': task
     }
 
-    config = {
-        'base': {
-            'run_base_dir': '/home/wangdp/project/gidat/workspace/run_base',
-            'python_exe': '/home/wangdp/.pyenv/versions/anaconda3-2019.10/envs/gidat/bin/python3'
-        },
-        'meteor_draw_plotter': {
-            'path': "/home/wangdp/project/gidat/meteor_draw/package/",
-            "program": "meteormap",
-        },
-    }
+    config = current_app.config["server_config"]["ploto"]
 
     from ploto.run import run_ploto
     run_ploto(message, config)

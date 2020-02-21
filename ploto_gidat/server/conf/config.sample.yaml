@@ -19,3 +19,11 @@ scheduler:
   routing_keys:
     pattern: plot.task.*
     default: plot.task.default
+
+ploto:
+  base:
+    run_base_dir: run base dir
+    python_exe: python exe
+  meteor_draw_plotter:
+    path: metormap directory, including library
+    program: "meteormap"

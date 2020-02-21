@@ -1,6 +1,7 @@
 from flask import request, json, current_app, jsonify
 
 from ploto_gidat.server.api import api_v1_app
+from ploto_gidat.server.common.gidat import run_meteor_draw_task
 
 
 @api_v1_app.route('/gidat/plot/meteor_draw/example', methods=['POST'])
@@ -8,9 +9,8 @@ def receive_gidat_plot_example():
     """
 
     POST DATA
-    message
         {
-            "task": {}, # task json object
+            "plot_task": {}, # task json object
         }
 
     返回值：
@@ -27,10 +27,7 @@ def receive_gidat_plot_example():
             'status': 'error',
         })
 
-    from ploto.scheduler.rabbitmq.producer.producer import send_message
-    scheduler_config = current_app.config['server_config']['broker']['scheduler']
-    current_app.logger.info('Sending task to scheduler...')
-    send_message(plot_task, config=scheduler_config)
+    run_meteor_draw_task(plot_task)
 
     return jsonify({
         'status': 'ok',

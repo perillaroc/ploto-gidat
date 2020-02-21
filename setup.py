@@ -31,6 +31,7 @@ setup(
         'requests',
         'sqlalchemy',
         'loguru',
+        "flask",
     ],
 
     extras_require={

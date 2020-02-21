@@ -6,13 +6,13 @@ import json
 from loguru import logger
 
 
-def run_plotter(plotter_task: dict, work_dir: str, config: dict):
+def run_plotter(task: dict, work_dir: str, config: dict):
     """
     run meteor_draw plotter
 
     Parameters
     ----------
-    plotter_task:
+    task:
         a dict config of plotter task.
         {
             'step_type': 'plotter',
@@ -32,9 +32,9 @@ def run_plotter(plotter_task: dict, work_dir: str, config: dict):
     """
     logger.info('running meteor_draw_plotter...')
 
-    plot_task = plotter_task["plot_task"]
+    plot_task = task["plot_task"]
     with open("task.json", "w") as f:
-        json.dump(f, plot_task)
+        json.dump(plot_task, f)
 
     envs = os.environ.copy()
     envs["LD_LIBRARY_PATH"] = f"{config['meteor_draw_plotter']['path']}:{envs.get('LD_LIBRARY_PATH','')}"

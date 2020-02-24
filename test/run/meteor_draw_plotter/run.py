@@ -2,6 +2,11 @@ from ploto_gidat.server.common.gidat import run_meteor_draw_task
 
 
 def run():
+    """
+    Warnings
+    --------
+    This example is not worked.
+    """
     plot_task = {
         "maplayer": [
             {

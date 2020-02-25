@@ -21,7 +21,7 @@ def receive_gidat_plot_example():
     if 'plot_task' in request.form:
         plot_task = json.loads(request.form['plot_task'])
     elif 'plot_task' in request.json:
-        plot_task = json.loads(request.json['plot_task'])
+        plot_task = request.json['plot_task']
     else:
         return jsonify({
             'status': 'error',

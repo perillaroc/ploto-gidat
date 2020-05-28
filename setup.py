@@ -32,6 +32,7 @@ setup(
         'sqlalchemy',
         'loguru',
         "flask",
+        "pandas",
     ],
 
     extras_require={

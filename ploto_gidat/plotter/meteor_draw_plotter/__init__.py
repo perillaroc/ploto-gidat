@@ -26,6 +26,7 @@ def run_plotter(task: dict, work_dir: str, config: dict):
             'meteor_draw_plotter': {
                 'path': "/home/wangdp/project/gidat/meteor_draw/package/",
                 "program": "meteormap",
+                "config_file": "config file path",
             },
         }
 
@@ -41,8 +42,9 @@ def run_plotter(task: dict, work_dir: str, config: dict):
 
     logger.info("run meteor_draw program...")
     program_path = Path(config["meteor_draw_plotter"]["path"], config["meteor_draw_plotter"]["program"])
+    config_file_path = config["meteor_draw_plotter"]["config_file"]
     ncl_command = [
-        f"{program_path} ./task.json"
+        f"{program_path} ./task.json {config_file_path}"
     ]
     logger.info("ncl command: {ncl_command}".format(ncl_command=' '.join(ncl_command)))
     result = subprocess.run(

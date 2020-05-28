@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import subprocess
 import json
+import configparser
 
 from loguru import logger
 
@@ -42,9 +43,18 @@ def run_plotter(task: dict, work_dir: str, config: dict):
 
     logger.info("run meteor_draw program...")
     program_path = Path(config["meteor_draw_plotter"]["path"], config["meteor_draw_plotter"]["program"])
+
     config_file_path = config["meteor_draw_plotter"]["config_file"]
+
+    config = configparser.ConfigParser()
+    with open(config_file_path, "r") as f:
+        config.read_file(f)
+    config["path"]["plotfile_path"] = str(work_dir)
+    with open("config.ini", "w") as f:
+        config.write(f)
+
     ncl_command = [
-        f"{program_path} ./task.json {config_file_path}"
+        f"{program_path} ./task.json ./config.ini"
     ]
     logger.info("ncl command: {ncl_command}".format(ncl_command=' '.join(ncl_command)))
     result = subprocess.run(

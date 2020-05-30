@@ -4,6 +4,7 @@ import json
 from flask import current_app
 import pandas as pd
 import numpy as np
+from loguru import logger
 
 from nwpc_data.data_finder import find_local_file
 from ploto.scheduler.rabbitmq.producer.producer import send_message
@@ -54,7 +55,7 @@ def generate_meteor_draw_tasks(request_data: dict):
         )
 
         if data_path is None:
-            print("WARNING: data is not found", start_time, forecast_time)
+            logger.warning("WARNING: data is not found", start_time, forecast_time)
             continue
 
         plot_task = plot_task_template
@@ -74,11 +75,11 @@ def generate_meteor_draw_tasks(request_data: dict):
             'timestamp': time.time(),
             'data': task
         }
-        print(message)
+        logger.info(message)
         config = current_app.config["server_config"]["scheduler"]
-        print("send message...")
+        logger.info("send message...")
         send_message(message, config)
-        print("send message...done")
+        logger.info("send message...done")
 
 
 def get_date_list(start_valid_time, end_valid_time):

@@ -18,7 +18,7 @@ def run():
                         1,
                         1
                     ],
-                    "level_num": -842150451,
+                    "level_num": 7,
                     "levelvaluesarray": [
                         0.10000000149011612,
                         10,

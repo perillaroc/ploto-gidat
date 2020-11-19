@@ -18,7 +18,7 @@ def receive_message():
                         1,
                         1
                     ],
-                    "level_num": -842150451,
+                    "level_num": 7,
                     "levelvaluesarray": [
                         0.10000000149011612,
                         10,
@@ -97,13 +97,13 @@ def receive_message():
             "12"
         ],
         "end_time": "2020070200000",
-        "fcstlen": "6",
+        "fcstlen": "24",
         "plot_task": plot_task
     }
 
 
     requests.post(
-        url="http://localhost:6301/api/v1/giset/plot/meteor-draw/ploto",
+        url="http://localhost:6301/api/v1/giset/plot/meteor-draw/example",
         json=data,
     )
 

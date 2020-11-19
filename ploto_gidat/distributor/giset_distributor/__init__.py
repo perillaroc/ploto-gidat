@@ -53,6 +53,7 @@ def run_distributor(
         work_dir: typing.Union[str, pathlib.Path],
         config: typing.Dict
 ):
+    distributor_config = config["giset_distributor"]
     # check image
     work_dir = pathlib.Path(work_dir)
     image_list = list(work_dir.glob("*.png"))
@@ -66,15 +67,14 @@ def run_distributor(
     logger.info(f"find image: {file_path.name}")
 
     work_dir_name = work_dir.name
-    plot_base_dir = config["archive"]["plot_base_dir"]
-    archive_file_path = pathlib.Path(plot_base_dir, work_dir_name + "-1.png")
+    image_base_dir = distributor_config["archive"]["image_base_dir"]
+    archive_file_path = pathlib.Path(image_base_dir, work_dir_name + "-1.png")
     logger.info(f"copy file to {archive_file_path}")
     shutil.copy2(file_path, archive_file_path)
 
     return
 
     # send message
-    distributor_config = config['giset_post_processor']
     target_config = distributor_config["target"]
     auth_config = target_config["auth"]
     url = target_config["url"].format(**auth_config)

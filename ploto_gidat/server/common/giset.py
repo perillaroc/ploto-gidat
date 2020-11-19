@@ -79,9 +79,46 @@ def generate_and_send_meteor_draw_tasks(request_data: dict):
 
     plot_task_template = request_data['plot_task']
 
-    # get data list
     start_time = pd.to_datetime(start_valid_time[:10], format="%Y%m%d%H")
     end_time = pd.to_datetime(end_valid_time[:10], format="%Y%m%d%H")
+
+    task_iter = generate_meteor_draw_tasks(
+        data_source,
+        start_time,
+        end_time,
+        start_hours,
+        forecast_length,
+        forecast_step,
+        plot_task_template,
+    )
+
+    for task in task_iter:
+        message = {
+            'app': 'ploto',
+            'type': 'ploto-gidat',
+            'timestamp': time.time(),
+            'data': task
+        }
+        logger.info(message)
+        continue
+
+        config = current_app.config["server_config"]["scheduler"]
+        logger.info("send message...")
+        send_message(message, config)
+        logger.info("send message...done")
+
+
+def generate_meteor_draw_tasks(
+        data_source: typing.Dict,
+        start_time: pd.Timestamp,
+        end_time: pd.Timestamp,
+        start_hours: typing.List,
+        forecast_length: int,
+        forecast_step: int,
+        plot_task_template: typing.Dict,
+) -> typing.Iterable[typing.Dict]:
+
+    # get data list
     date_list = get_date_list(
         start_time,
         end_time,
@@ -110,19 +147,49 @@ def generate_and_send_meteor_draw_tasks(request_data: dict):
             data_path,
             data_source
         )
+        yield task
 
-        message = {
-            'app': 'ploto',
-            'type': 'ploto-gidat',
-            'timestamp': time.time(),
-            'data': task
-        }
-        logger.info(message)
-        continue
-        config = current_app.config["server_config"]["scheduler"]
-        logger.info("send message...")
-        send_message(message, config)
-        logger.info("send message...done")
+
+def generate_plot_task(
+        plot_task_template: typing.Dict,
+        data_path: pathlib.Path,
+        data_source: typing.Dict,
+) -> typing.Dict:
+    """
+    Generate plot task for GISET.
+
+    Parameters
+    ----------
+    plot_task_template
+    data_path
+
+    Returns
+    -------
+
+    """
+    plot_task = plot_task_template.copy()
+    for layer in plot_task["maplayer"]:
+        layer["file_path"] = str(data_path)
+
+    task = {
+        'steps': [
+            {
+                'step_type': 'plotter',
+                'type': 'ploto_gidat.plotter.meteor_draw_plotter',
+                'plot_task': plot_task,
+            },
+            {
+                'step_type': 'distributor',
+                'type': 'ploto_gidat.distributor.giset_distributor',
+                "username": data_source["username"],
+                "user_id": data_source["user_id"],
+                "routing_key": data_source["routing_key"],
+                "test_ID": data_source["test_ID"],
+            },
+        ],
+    }
+
+    return task
 
 
 def get_date_list(
@@ -180,45 +247,3 @@ def get_data_path(
     )
 
     return data_path
-
-
-def generate_plot_task(
-        plot_task_template: typing.Dict,
-        data_path: pathlib.Path,
-        data_source: typing.Dict,
-) -> typing.Dict:
-    """
-    Generate plot task for GISET.
-
-    Parameters
-    ----------
-    plot_task_template
-    data_path
-
-    Returns
-    -------
-
-    """
-    plot_task = plot_task_template.copy()
-    for layer in plot_task["maplayer"]:
-        layer["file_path"] = str(data_path)
-
-    task = {
-        'steps': [
-            {
-                'step_type': 'plotter',
-                'type': 'ploto_gidat.plotter.meteor_draw_plotter',
-                'plot_task': plot_task,
-            },
-            {
-                'step_type': 'distributor',
-                'type': 'ploto_gidat.distributor.gidat_distributor',
-                "username": data_source["username"],
-                "user_id": data_source["user_id"],
-                "routing_key": data_source["routing_key"],
-                "test_ID": data_source["test_ID"],
-            },
-        ],
-    }
-
-    return task

@@ -1,4 +1,5 @@
 from ploto_gidat.server.common.gidat import run_meteor_draw_task
+import warnings
 
 
 def run():
@@ -7,6 +8,7 @@ def run():
     --------
     This example is not worked.
     """
+    warnings.warn("This example can't run.")
     plot_task = {
         "maplayer": [
             {

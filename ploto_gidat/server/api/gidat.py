@@ -10,13 +10,14 @@ from ploto_gidat.server.common.gidat import (
 @api_v1_app.route('/gidat/plot/meteor_draw/example', methods=['POST'])
 def receive_gidat_plot_example():
     """
+    Run plot task in server.
 
     POST DATA
         {
             "plot_task": {}, # task json object
         }
 
-    返回值：
+    RETURN DATA：
         {
             "status": "ok",
         }
@@ -40,6 +41,7 @@ def receive_gidat_plot_example():
 @api_v1_app.route('/gidat/plot/meteor_draw/ploto', methods=['POST'])
 def receive_gidat_plot_ploto():
     """
+    Generate plot tasks and send to RabbitMQ
 
     POST DATA
         {

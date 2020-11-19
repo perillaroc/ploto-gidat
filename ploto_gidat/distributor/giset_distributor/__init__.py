@@ -67,8 +67,12 @@ def run_distributor(
     logger.info(f"find image: {file_path.name}")
 
     work_dir_name = work_dir.name
-    image_base_dir = distributor_config["archive"]["image_base_dir"]
-    archive_file_path = pathlib.Path(image_base_dir, work_dir_name + "-1.png")
+    local_base_dir = distributor_config["archive"]["image"]["local_base_dir"]
+    notify_base_dir = distributor_config["archive"]["image"]["notify_base_dir"]
+
+    archive_file_path = pathlib.Path(local_base_dir, work_dir_name + "-1.png")
+    notify_file_path = pathlib.Path(notify_base_dir, work_dir_name + "-1.png")
+
     logger.info(f"copy file to {archive_file_path}")
     shutil.copy2(file_path, archive_file_path)
 
@@ -92,7 +96,7 @@ def run_distributor(
             }
         },
         "routing_key": task["routing_key"],
-        "playload": archive_file_path,
+        "playload": notify_file_path,
         "payload_encoding": "string"
     }
 

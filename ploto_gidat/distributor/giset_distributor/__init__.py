@@ -14,7 +14,7 @@ task schema:
         "routing_key": "GFSNEW.niuxingy",
         "test_ID": "TG2000617",
 
-        # "file_path": ".....",
+        # "file_path": ".....",  # query from work directory.
 
         "action": "diagnosis",
         "viewip": "10.40.23.43",
@@ -37,13 +37,14 @@ message schema:
             }
         },
         "routing_key": task["routing_key"],
-        "playload": task["file_path"],
+        "playload": "file path",
         "payload_encoding": "string"
     }
 """
 import typing
 import pathlib
 import shutil
+import datetime
 
 from flask import json
 import requests
@@ -69,13 +70,19 @@ def run_distributor(
     logger.info(f"find image: {file_path.name}")
 
     work_dir_name = work_dir.name
+    image_file_name = f"{work_dir_name}-1.png"
+
+    current_time = datetime.datetime.now()
+    inter_directory = current_time.strftime("%Y%m%d%H")
+
     local_base_dir = distributor_config["archive"]["image"]["local_base_dir"]
     notify_base_dir = distributor_config["archive"]["image"]["notify_base_dir"]
 
-    archive_file_path = pathlib.Path(local_base_dir, work_dir_name + "-1.png")
-    notify_file_path = pathlib.Path(notify_base_dir, work_dir_name + "-1.png")
+    archive_file_path = pathlib.Path(local_base_dir, inter_directory, image_file_name)
+    notify_file_path = pathlib.Path(notify_base_dir, inter_directory, image_file_name)
 
     logger.info(f"copy file to {archive_file_path}")
+    archive_file_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(file_path, archive_file_path)
 
     # send message

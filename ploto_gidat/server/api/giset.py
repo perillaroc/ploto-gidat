@@ -6,7 +6,6 @@ import pandas as pd
 from ploto.run import run_ploto
 from ploto_gidat.server.api import api_v1_app
 from ploto_gidat.server.common.giset import (
-    run_meteor_draw_task,
     generate_and_send_meteor_draw_tasks,
     generate_meteor_draw_tasks,
 )

@@ -4,7 +4,6 @@ import itertools
 import pathlib
 import json
 
-from flask import current_app
 import pandas as pd
 import numpy as np
 from loguru import logger
@@ -13,51 +12,18 @@ from nwpc_data.data_finder import find_local_file
 from ploto.scheduler.rabbitmq.producer.producer import send_message
 
 
-def generate_and_send_meteor_draw_tasks(request_data: dict):
+def generate_and_send_meteor_draw_tasks(
+        data_source: typing.Dict,
+        start_time: pd.Timestamp,
+        end_time: pd.Timestamp,
+        start_hours: typing.List[int],
+        forecast_length: int,
+        forecast_step: int,
+        plot_task_template: typing.Dict,
+        scheduler_config: typing.Dict,
+):
     """
-
-    Parameters
-    ----------
-    request_data:
-    {
-        "data_source": {
-            "system_name": "grapes_gfs_gmf",
-            "username": "niuxingy",
-            "user_id": "u0184",
-            "data_type": "storage",
-            "routing_key": "GFSNEW.niuxingy",
-            "test_ID": "TG2000617"
-        },
-        "start_time": "2020070100000",
-        "step": "6",
-        "hh_list": [
-            "00",
-            "12"
-        ],
-        "end_time": "2020070200000",
-        "fcstlen": "96",
-        "plot_task": {
-            // ...skip...
-        }
-    }
-
-    Returns
-    -------
-
     """
-    data_source = request_data["data_source"]
-
-    start_valid_time = request_data["start_time"]
-    end_valid_time = request_data["end_time"]
-    forecast_length = int(request_data["fcstlen"])
-    forecast_step = int(request_data["step"])
-    start_hours = [int(f) for f in request_data["hh_list"]]
-
-    plot_task_template = request_data['plot_task']
-
-    start_time = pd.to_datetime(start_valid_time[:10], format="%Y%m%d%H")
-    end_time = pd.to_datetime(end_valid_time[:10], format="%Y%m%d%H")
-
     task_iter = generate_meteor_draw_tasks(
         data_source,
         start_time,
@@ -78,9 +44,8 @@ def generate_and_send_meteor_draw_tasks(request_data: dict):
         logger.info(message)
         continue
 
-        config = current_app.config["server_config"]["scheduler"]
         logger.info("send message...")
-        send_message(message, config)
+        send_message(message, scheduler_config)
         logger.info("send message...done")
 
 

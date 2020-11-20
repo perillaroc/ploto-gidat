@@ -33,6 +33,7 @@ message schema:
                 "username": task["username"],
                 "viewip": "10.40.23.43",
                 "action": "diagnosis",
+                "deliver_mode": 2,
             }
         },
         "routing_key": task["routing_key"],
@@ -44,6 +45,7 @@ import typing
 import pathlib
 import shutil
 
+from flask import json
 import requests
 from loguru import logger
 
@@ -76,8 +78,6 @@ def run_distributor(
     logger.info(f"copy file to {archive_file_path}")
     shutil.copy2(file_path, archive_file_path)
 
-    return
-
     # send message
     target_config = distributor_config["target"]
     auth_config = target_config["auth"]
@@ -93,12 +93,21 @@ def run_distributor(
                 "username": task["username"],
                 "viewip": "10.40.23.43",
                 "action": "diagnosis",
+                "deliver_mode": 2,
             }
         },
         "routing_key": task["routing_key"],
-        "playload": notify_file_path,
+        "playload": str(notify_file_path.absolute()),
         "payload_encoding": "string"
     }
+
+    logger.info(f"post message: {json.dumps(data)}")
+
+    # just for test
+    with open(f"request_{work_dir_name}.json", "w") as f:
+        json.dump(data, f)
+
+    return
 
     result = requests.post(
         url, json=data

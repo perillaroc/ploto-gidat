@@ -42,7 +42,6 @@ def generate_and_send_meteor_draw_tasks(
             'data': task
         }
         logger.info(message)
-        continue
 
         logger.info("send message...")
         send_message(message, scheduler_config)

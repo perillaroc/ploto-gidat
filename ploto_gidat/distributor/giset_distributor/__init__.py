@@ -114,11 +114,15 @@ def run_distributor(
     with open(f"request_{work_dir_name}.json", "w") as f:
         json.dump(data, f)
 
-    return
+    try:
+        result = requests.post(
+            url, json=data,
+            timeout=5,
+        )
+        logger.info(f"post message done")
+    except requests.exceptions.Timeout:
+        logger.error(f"post message failed by time out")
 
-    result = requests.post(
-        url, json=data
-    )
     return
 
 

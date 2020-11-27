@@ -89,6 +89,7 @@ def run_distributor(
     target_config = distributor_config["target"]
     auth_config = target_config["auth"]
     url = target_config["url"].format(**auth_config)
+    logger.info(f"post url: {url}")
 
     data = {
         "properties": {

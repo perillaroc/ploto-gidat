@@ -100,11 +100,11 @@ def run_distributor(
                 "username": task["username"],
                 "viewip": "10.40.23.43",
                 "action": "diagnosis",
-                "deliver_mode": 2,
-            }
+            },
+            "deliver_mode": 2,
         },
         "routing_key": task["routing_key"],
-        "playload": str(notify_file_path.absolute()),
+        "payload": str(notify_file_path.absolute()),
         "payload_encoding": "string"
     }
 

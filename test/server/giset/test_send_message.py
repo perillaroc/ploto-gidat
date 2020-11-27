@@ -103,7 +103,7 @@ def receive_message():
 
 
     requests.post(
-        url="http://localhost:6301/api/v1/giset/plot/meteor-draw/ploto",
+        url="http://10.40.23.43:6301/api/v1/giset/plot/meteor-draw/ploto",
         json=data,
     )
 

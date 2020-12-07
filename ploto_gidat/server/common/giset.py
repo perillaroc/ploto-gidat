@@ -71,30 +71,23 @@ def generate_meteor_draw_tasks(
         start_time = item[1]["start_time"]
         forecast_time = item[1]["forecast_time"]
 
-        data_path = get_data_path(
-            data_source,
-            start_time=start_time,
-            forecast_time=forecast_time,
-            data_type="grib2/orig"
-        )
-
-        if data_path is None:
-            logger.warning("WARNING: data is not found", start_time, forecast_time)
-            continue
-
         task = generate_plot_task(
             plot_task_template,
-            data_path,
-            data_source
+            start_time,
+            forecast_time,
+            data_source,
         )
+        if task is None:
+            continue
         yield task
 
 
 def generate_plot_task(
         plot_task_template: typing.Dict,
-        data_path: pathlib.Path,
+        start_time: pd.Timestamp,
+        forecast_time: pd.Timedelta,
         data_source: typing.Dict,
-) -> typing.Dict:
+) -> typing.Optional[typing.Dict]:
     """
     Generate plot task for GISET.
 
@@ -107,6 +100,17 @@ def generate_plot_task(
     -------
 
     """
+    data_path = get_data_path(
+        data_source,
+        start_time=start_time,
+        forecast_time=forecast_time,
+        data_type="grib2/orig"
+    )
+
+    if data_path is None:
+        logger.warning("WARNING: data is not found", start_time, forecast_time)
+        return None
+
     plot_task = plot_task_template.copy()
     for layer in plot_task["maplayer"]:
         layer["file_path"] = str(data_path)
@@ -125,6 +129,9 @@ def generate_plot_task(
                 "user_id": data_source["user_id"],
                 "routing_key": data_source["routing_key"],
                 "test_ID": data_source["test_ID"],
+                "meteor_type": plot_task["maplayer"][0]["meteor_type"],
+                "start_time": start_time.isoformat(),
+                "forecast_time": forecast_time.isoformat(),
             },
         ],
     }

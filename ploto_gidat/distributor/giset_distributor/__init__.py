@@ -46,6 +46,7 @@ import pathlib
 import shutil
 import datetime
 
+import pandas as pd
 from flask import json
 import requests
 from loguru import logger
@@ -70,10 +71,21 @@ def run_distributor(
     logger.info(f"find image: {file_path.name}")
 
     work_dir_name = work_dir.name
-    image_file_name = f"{work_dir_name}-1.png"
+
+    meteor_type = task["meteor_type"]
+
+    start_time = pd.to_datetime(task["start_time"])
+    forecast_time = pd.to_timedelta(task["forecast_time"])
+    forecast_hour = int(forecast_time.seconds/3600)
+
+    image_file_name = f"{task['test_ID']}-{start_time.strftime('%Y%m%d%H')}{forecast_hour:03}.png"
 
     current_time = datetime.datetime.now()
-    inter_directory = current_time.strftime("%Y%m%d%H")
+    inter_directory = pathlib.Path(
+        current_time.strftime("%Y%m%d%H"),
+        task['test_ID'],
+        meteor_type,
+    )
 
     local_base_dir = distributor_config["archive"]["image"]["local_base_dir"]
     notify_base_dir = distributor_config["archive"]["image"]["notify_base_dir"]
@@ -83,7 +95,7 @@ def run_distributor(
 
     logger.info(f"copy file to {archive_file_path}")
     archive_file_path.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(file_path, archive_file_path)
+    shutil.copy2(file_path, archive_file_path.absolute())
 
     # send message
     target_config = distributor_config["target"]
@@ -105,7 +117,7 @@ def run_distributor(
             "deliver_mode": 2,
         },
         "routing_key": task["routing_key"],
-        "payload": str(notify_file_path.absolute()),
+        "payload": f"{meteor_type} {str(notify_file_path.absolute())}",
         "payload_encoding": "string"
     }
 

@@ -176,7 +176,7 @@ def get_date_list(
         date_time_list,
         columns=["start_date", "start_hour", "forecast_time"]
     )
-    date_list["start_time"] = date_list["start_date"] + date_list["start_hour"]
+    date_list["start_time"] = date_list["start_date"].map(lambda x: pd.to_datetime(x.date())) + date_list["start_hour"]
     return date_list[["start_time", "forecast_time"]].copy()
 
 
@@ -187,10 +187,13 @@ def get_data_path(
         data_type: str = "grib2/orig",
 ) -> typing.Optional[pathlib.Path]:
     system_name = data_source["system_name"]
+    exp_id = data_source["test_ID"]
     data_path = find_local_file(
         f"{system_name}/{data_type}",
         start_time=start_time,
         forecast_time=forecast_time,
+        data_class="exp",
+        exp_id=exp_id,
     )
 
     return data_path

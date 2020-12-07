@@ -187,7 +187,8 @@ def get_data_path(
         data_type: str = "grib2/orig",
 ) -> typing.Optional[pathlib.Path]:
     system_name = data_source["system_name"]
-    exp_id = data_source["test_ID"]
+    # exp_id = data_source["test_ID"]
+    exp_id = "TG2000639"
     data_path = find_local_file(
         f"{system_name}/{data_type}",
         start_time=start_time,

@@ -76,7 +76,7 @@ def run_distributor(
 
     start_time = pd.to_datetime(task["start_time"])
     forecast_time = pd.to_timedelta(task["forecast_time"])
-    forecast_hour = int(forecast_time.seconds/3600)
+    forecast_hour = int(forecast_time.seconds/3600 + forecast_time.days * 24)
 
     image_file_name = f"{task['test_ID']}-{start_time.strftime('%Y%m%d%H')}{forecast_hour:03}.png"
 

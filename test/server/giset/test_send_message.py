@@ -88,15 +88,15 @@ def receive_message():
             "user_id": "u0184",
             "data_type": "storage",
             "routing_key": "GFSNEW.niuxingy",
-            "test_ID": "TG2000639"
+            "test_ID": "TG2000751"
         },
         "start_time": "2020051012000",
         "step": "6",
         "hh_list": [
             "12"
         ],
-        "end_time": "2020051512000",
-        "fcstlen": "24",
+        "end_time": "2020051112000",
+        "fcstlen": "240",
         "plot_task": plot_task
     }
 

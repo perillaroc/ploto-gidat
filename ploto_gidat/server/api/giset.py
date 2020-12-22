@@ -124,7 +124,9 @@ def receive_giset_plot_ploto():
     data_source = request_data["data_source"]
 
     start_valid_time = request_data["start_time"]
+    # start_valid_time = "2020051012000"
     end_valid_time = request_data["end_time"]
+    # end_valid_time = "2020070200000"
     forecast_length = int(request_data["fcstlen"])
     forecast_step = int(request_data["step"])
     start_hours = [int(f) for f in request_data["hh_list"]]

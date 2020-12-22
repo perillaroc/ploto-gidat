@@ -164,7 +164,7 @@ def get_date_list(
     """
     start_times = pd.date_range(start_time, end_time, freq="D")
     start_hours = [pd.Timedelta(hours=h) for h in start_hours]
-    forecast_hours = pd.to_timedelta(np.arange(0, forecast_length, forecast_step), unit="h").to_series()
+    forecast_hours = pd.to_timedelta(np.arange(0, forecast_length + 1, forecast_step), unit="h").to_series()
 
     date_time_list = itertools.product(
         start_times,
@@ -187,8 +187,8 @@ def get_data_path(
         data_type: str = "grib2/orig",
 ) -> typing.Optional[pathlib.Path]:
     system_name = data_source["system_name"]
-    # exp_id = data_source["test_ID"]
-    exp_id = "TG2000639"
+    exp_id = data_source["test_ID"]
+    # exp_id = "TG2000639"
     data_path = find_local_file(
         f"{system_name}/{data_type}",
         start_time=start_time,
